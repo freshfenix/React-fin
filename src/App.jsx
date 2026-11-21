@@ -91,7 +91,9 @@ function App() {
           </nav>
         </div>
         <div className="sidebar-note">
-          <span className="note-sparkle">✳</span>
+          <span className="note-sparkle" aria-hidden="true">
+            <span className="sparkle-icon" />
+          </span>
           <p className="note-title">Маленький крок</p>
           <p className="note-copy">
             ще кілька сторінок сьогодні — і ти вже ближче до мети.
@@ -192,7 +194,9 @@ function App() {
             </article>
             <article className="stat-card">
               <div className="stat-top">
-                <span className="stat-icon stat-icon-lavender">✳</span>
+                <span className="stat-icon stat-icon-lavender">
+                  <span className="sparkle-icon" aria-hidden="true" />
+                </span>
                 <span className="stat-trend">ТИ ВЖЕ ПРОЧИТАВ</span>
               </div>
               <strong>{pagesRead.toLocaleString('uk-UA')}</strong>
@@ -255,7 +259,7 @@ function App() {
               </div>
             ) : (
               <div className="empty-state">
-                <span aria-hidden="true">✳</span>
+                <span className="sparkle-icon" aria-hidden="true" />
                 <h3>{search ? 'Нічого не знайшлося' : 'Тут поки тихо'}</h3>
                 <p>
                   {search
@@ -278,7 +282,8 @@ function App() {
           <footer className="page-footer">
             <span>Зроблено з любов’ю до читання</span>
             <span>
-              одна сторінка за раз <span aria-hidden="true">✳</span>
+              одна сторінка за раз{' '}
+              <span className="sparkle-icon" aria-hidden="true" />
             </span>
           </footer>
         </div>

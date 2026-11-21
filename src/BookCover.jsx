@@ -8,7 +8,9 @@ export default function BookCover({ book }) {
     >
       {!book.cover && (
         <>
-          <span className="cover-mark" aria-hidden="true">✳</span>
+          <span className="cover-mark" aria-hidden="true">
+            <span className="sparkle-icon" />
+          </span>
           <span className="cover-title">{book.title}</span>
           <span className="cover-author">{book.author}</span>
         </>

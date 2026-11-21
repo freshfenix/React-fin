@@ -66,7 +66,9 @@ export default function BookCard({ book }) {
             <span>{book.totalPages ? `${book.totalPages} сторінок` : 'Книжка'}</span>
             {book.status === 'completed' && (
               <span className="book-rating" aria-label={`Оцінка: ${book.rating} з 5`}>
-                {'★'.repeat(book.rating || 5)}
+                {Array.from({ length: book.rating || 5 }, (_, index) => (
+                  <span className="rating-star" key={index} aria-hidden="true" />
+                ))}
               </span>
             )}
           </div>

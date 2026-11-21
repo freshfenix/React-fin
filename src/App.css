@@ -237,6 +237,15 @@
   font-size: 17px;
 }
 
+.sparkle-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.08em;
+  background-color: currentColor;
+  clip-path: polygon(50% 0, 60% 38%, 100% 50%, 60% 62%, 50% 100%, 40% 62%, 0 50%, 40% 38%);
+}
+
 .note-title {
   margin: 13px 0 5px;
   color: #f3efe6;
@@ -484,7 +493,7 @@
 }
 
 .welcome-row h1 em {
-  color: #f4cd71;
+  color: #fff;
   font-weight: 400;
 }
 
@@ -1040,9 +1049,17 @@
 }
 
 .book-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
   color: #80521d;
-  font-size: 10px;
-  letter-spacing: 1px;
+}
+
+.rating-star {
+  width: 8px;
+  height: 8px;
+  background-color: currentColor;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 95%, 50% 73%, 21% 95%, 32% 57%, 2% 35%, 39% 35%);
 }
 
 .book-action {
@@ -1437,6 +1454,12 @@
   .welcome-row::before,
   .welcome-row::after {
     display: none;
+  }
+
+  .welcome-row {
+    background:
+      repeating-linear-gradient(135deg, transparent 0 33px, #ffffff0b 34px 35px),
+      linear-gradient(112deg, #58384e 0%, #9d4645 54%, #ce6549 100%);
   }
 
   .welcome-row > div {
