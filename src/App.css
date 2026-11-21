@@ -98,7 +98,7 @@
 
 .sidebar-label,
 .eyebrow {
-  color: #89978e;
+  color: #594d43;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1.45px;
@@ -233,7 +233,7 @@
 }
 
 .note-sparkle {
-  color: #e3c18f;
+  color: #fff4d6;
   font-size: 17px;
 }
 
@@ -246,7 +246,7 @@
 
 .note-copy {
   max-width: 165px;
-  color: #bec9c0;
+  color: #fff7eb;
   font-family: var(--font-display);
   font-size: 11px;
   line-height: 1.65;
@@ -255,7 +255,7 @@
 .note-signature {
   display: block;
   margin-top: 13px;
-  color: #d8c29f;
+  color: #fff4d6;
   font-size: 9px;
   letter-spacing: 0.5px;
 }
@@ -326,7 +326,7 @@
   display: flex;
   align-items: center;
   gap: 11px;
-  color: #999d94;
+  color: #594d43;
   font-size: 11px;
 }
 
@@ -375,7 +375,7 @@
 }
 
 .breadcrumb-divider {
-  color: #c6c8c0;
+  color: #62584b;
 }
 
 .breadcrumb strong {
@@ -390,7 +390,7 @@
 }
 
 .today-date {
-  color: #777e74;
+  color: #594d43;
   font-size: 10px;
 }
 
@@ -490,7 +490,7 @@
 
 .welcome-copy {
   margin: 12px 0 0;
-  color: #f5e1d0;
+  color: #fff7eb;
   font-size: 12px;
 }
 
@@ -573,7 +573,7 @@
 }
 
 .stat-icon-peach {
-  color: #a64e42;
+  color: #914239;
   background: #f6dfca;
 }
 
@@ -588,7 +588,7 @@
 }
 
 .stat-trend {
-  color: #8d9589;
+  color: #594d43;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.7px;
@@ -606,14 +606,14 @@
 }
 
 .stat-unit {
-  color: #7d897d;
+  color: #594d43;
   font-size: 15px;
 }
 
 .stat-caption {
   display: block;
   margin-top: 6px;
-  color: #8a8e85;
+  color: #594d43;
   font-size: 9px;
 }
 
@@ -651,7 +651,7 @@
 
 .section-heading .eyebrow {
   margin-bottom: 7px;
-  color: #a15a4b;
+  color: #854334;
 }
 
 .section-heading h2 {
@@ -672,7 +672,7 @@
   padding: 0 9px;
   border: 1px solid #e8e9e4;
   border-radius: 5px;
-  color: #8c9389;
+  color: #594d43;
   background: #fff;
 }
 
@@ -695,7 +695,7 @@
 
 .library-search input::placeholder,
 .api-search input::placeholder {
-  color: #9a9d96;
+  color: #594d43;
 }
 
 .library-search kbd {
@@ -703,7 +703,7 @@
   padding: 2px 4px;
   border: 1px solid #ededeb;
   border-radius: 3px;
-  color: #9a9e97;
+  color: #594d43;
   background: #fafaf8;
   font-size: 8px;
 }
@@ -723,7 +723,7 @@
   padding: 9px 12px 12px;
   border-radius: 6px 6px 0 0;
   border: 0;
-  color: #8c9188;
+  color: #594d43;
   background: transparent;
   cursor: pointer;
   font: inherit;
@@ -738,7 +738,7 @@
   place-items: center;
   padding: 0 4px;
   border-radius: 10px;
-  color: #8c9188;
+  color: #594d43;
   background: #efefeb;
   font-size: 8px;
 }
@@ -810,6 +810,7 @@
   background-position: center;
   background-size: cover;
   box-shadow: inset -6px 0 10px #18273929;
+  isolation: isolate;
   text-align: center;
 }
 
@@ -829,9 +830,11 @@
 }
 
 .book-cover::after {
+  z-index: 1;
   inset: 11px 8px 11px 20px;
   border: 1px solid #ffffff42;
   border-radius: 1px;
+  background: #172238a6;
 }
 
 .cover-sage {
@@ -881,12 +884,15 @@
 
 .cover-mark {
   position: absolute;
+  z-index: 2;
   top: 13px;
-  color: #ffffff9e;
+  color: #fff;
   font-size: 15px;
 }
 
 .cover-title {
+  position: relative;
+  z-index: 2;
   display: -webkit-box;
   max-width: 100%;
   overflow: hidden;
@@ -894,17 +900,22 @@
   font-size: 17px;
   font-weight: 500;
   line-height: 1.15;
+  color: #fff;
+  text-shadow: 0 1px 3px #101726b3;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
 
 .cover-author {
+  position: relative;
+  z-index: 2;
   display: -webkit-box;
   max-width: 100%;
   overflow: hidden;
-  color: #ffffffc4;
+  color: #fff;
   font-size: 7px;
   line-height: 1.3;
+  text-shadow: 0 1px 3px #101726b3;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -974,7 +985,7 @@
 }
 
 .book-genre {
-  color: #889282;
+  color: #594d43;
   font-size: 8px;
   letter-spacing: 0.35px;
 }
@@ -995,7 +1006,7 @@
 
 .book-author {
   overflow: hidden;
-  color: #96988f;
+  color: #594d43;
   font-size: 8px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1009,7 +1020,7 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 6px;
-  color: #828a7d;
+  color: #594d43;
   font-size: 8px;
 }
 
@@ -1024,12 +1035,12 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 6px;
-  color: #93978d;
+  color: #594d43;
   font-size: 8px;
 }
 
 .book-rating {
-  color: #d3a66c;
+  color: #80521d;
   font-size: 10px;
   letter-spacing: 1px;
 }
@@ -1066,12 +1077,12 @@
   min-height: 220px;
   place-content: center;
   justify-items: center;
-  color: #858e82;
+  color: #594d43;
   text-align: center;
 }
 
 .empty-state > span {
-  color: #b7c3b2;
+  color: #625a50;
   font-size: 24px;
 }
 
@@ -1105,12 +1116,12 @@
   margin-top: 37px;
   padding-top: 14px;
   border-top: 1px solid #e9eae5;
-  color: #a1a39b;
+  color: #594d43;
   font-size: 8px;
 }
 
 .page-footer span span {
-  color: #bc9770;
+  color: #854334;
 }
 
 .dialog-backdrop {
@@ -1173,7 +1184,7 @@
 
 .dialog-intro {
   margin: 9px 0 17px;
-  color: #858b81;
+  color: #594d43;
   font-size: 10px;
 }
 
@@ -1189,7 +1200,7 @@
 }
 
 .api-search > span {
-  color: #7c8b7b;
+  color: #594d43;
   font-size: 20px;
 }
 
@@ -1212,7 +1223,8 @@
 
 .api-search button:disabled {
   cursor: not-allowed;
-  opacity: 0.55;
+  color: #594d43;
+  background: #e2e4d9;
 }
 
 .search-results {
@@ -1223,7 +1235,7 @@
 
 .search-message {
   margin: 18px 0;
-  color: #858b81;
+  color: #594d43;
   font-size: 10px;
   text-align: center;
 }
@@ -1286,7 +1298,7 @@
 .result-info > span {
   display: block;
   overflow: hidden;
-  color: #858b81;
+  color: #594d43;
   font-size: 8px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1294,7 +1306,7 @@
 
 .result-info > span {
   margin-top: 5px;
-  color: #a1a397;
+  color: #594d43;
 }
 
 .result-add {
@@ -1312,7 +1324,7 @@
 }
 
 .result-add:disabled {
-  color: #92988f;
+  color: #594d43;
   background: #f4f4f0;
   cursor: default;
 }
@@ -1339,7 +1351,7 @@
 }
 
 .manual-heading span {
-  color: #999d94;
+  color: #594d43;
   font-size: 8px;
 }
 
@@ -1352,7 +1364,7 @@
 .manual-fields label {
   display: grid;
   gap: 5px;
-  color: #747d71;
+  color: #594d43;
   font-size: 8px;
   font-weight: 600;
 }
@@ -1374,7 +1386,7 @@
 }
 
 .manual-fields input::placeholder {
-  color: #a4a69e;
+  color: #594d43;
 }
 
 .manual-genre {
@@ -1400,7 +1412,8 @@
 }
 
 .manual-submit:disabled {
-  background: #a6b0a5;
+  color: #594d43;
+  background: #e2e4d9;
   cursor: not-allowed;
 }
 
