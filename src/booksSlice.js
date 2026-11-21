@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { searchGoogleBooks } from './booksApi'
 
 export const STORAGE_KEY = 'readery-books'
 const BOOK_STATUSES = new Set(['reading', 'completed', 'want-to-read'])
@@ -106,45 +107,14 @@ export const searchBooks = createAsyncThunk(
     }
 
     try {
-      const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(normalizedQuery)}&maxResults=8`,
-        { signal },
-      )
-
-      if (response.status === 429) {
-        return rejectWithValue(
-          'Каталог тимчасово обмежив запити. Спробуйте пізніше або додайте книжку вручну.',
-        )
-      }
-
-      if (!response.ok) {
-        return rejectWithValue('Не вдалося знайти книжки. Спробуйте ще раз.')
-      }
-
-      const data = await response.json()
-
-      return (Array.isArray(data.items) ? data.items : [])
-        .filter((item) => item && typeof item.id === 'string')
-        .map(({ id, volumeInfo }) => {
-          const bookInfo =
-            volumeInfo && typeof volumeInfo === 'object' ? volumeInfo : {}
-
-          return {
-            id: `google-${id}`,
-            title: bookInfo.title ?? 'Без назви',
-            author: bookInfo.authors?.join(', ') ?? 'Автор невідомий',
-            genre: bookInfo.categories?.[0]?.split('/')[0]?.trim() ?? 'Інше',
-            status: 'want-to-read',
-            currentPage: 0,
-            totalPages: bookInfo.pageCount ?? 0,
-            rating: 0,
-            cover: bookInfo.imageLinks?.thumbnail?.replace('http://', 'https://'),
-            color: 'blue',
-          }
-        })
+      return await searchGoogleBooks(normalizedQuery, { signal })
     } catch (error) {
       if (signal.aborted) throw error
-      return rejectWithValue('Помилка з’єднання. Перевірте інтернет і спробуйте ще раз.')
+      return rejectWithValue(
+        error instanceof Error
+          ? error.message
+          : 'Помилка з’єднання. Перевірте інтернет і спробуйте ще раз.',
+      )
     }
   },
 )

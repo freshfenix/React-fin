@@ -10,7 +10,7 @@ npm run dev
 ```
 
 Для перевірки production-збірки виконайте `npm run build`.
-Модульні тести Redux slice і thunk запускаються командою `npm test`.
+Перевірка ESLint — `npm run lint`, модульні тести — `npm test`.
 
 ## Можливості
 
@@ -22,10 +22,13 @@ npm run dev
 
 ## Структура та стан
 
-- `src/App.jsx` — інтерфейс бібліотеки, карток книжок і діалогу пошуку.
-- `src/booksSlice.js` — Redux Toolkit slice з даними книжок і thunk `searchBooks` для запиту до Google Books API.
+- `src/App.jsx` — компонування сторінки та локальний стан інтерфейсу.
+- `src/BookCard.jsx`, `src/BookCover.jsx`, `src/AddBookDialog.jsx` — функціональні компоненти з окремими UI-відповідальностями.
+- `src/booksSlice.js` — Redux Toolkit slice та thunk `searchBooks`.
+- `src/booksApi.js` — запити до Google Books і нормалізація відповіді; API-шар можна замінити при підключенні бекенду.
+- `src/booksSelectors.js` — похідні дані бібліотеки та мемоізовані селектори.
 - `src/store.js` — конфігурація Redux store та збереження бібліотеки.
 - `src/main.jsx` — підключення Redux Provider до React-застосунку.
-- `src/booksSlice.test.js` — модульні тести редюсерів, persistence і асинхронного пошуку.
+- `src/booksSlice.test.js`, `src/booksSelectors.test.js` — модульні тести редюсерів, persistence, API thunk і селекторів.
 
 Статуси книжок: `reading`, `completed` і `want-to-read`.

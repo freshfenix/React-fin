@@ -197,6 +197,16 @@ describe('searchBooks thunk', () => {
     expect(store.getState().books.searchStatus).toBe('failed')
   })
 
+  it('returns a localized error when the network request fails', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network failure')))
+    const store = configureStore({ reducer: { books: booksReducer } })
+
+    const result = await store.dispatch(actions.searchBooks('A Book'))
+
+    expect(result.payload).toContain('Помилка з’єднання')
+    expect(store.getState().books.searchStatus).toBe('failed')
+  })
+
   it('does not call the API for an empty query', async () => {
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)
