@@ -64,9 +64,9 @@ export default function BookCard({ book }) {
         ) : (
           <div className="book-meta">
             <span>{book.totalPages ? `${book.totalPages} сторінок` : 'Книжка'}</span>
-            {book.status === 'completed' && (
+            {book.status === 'completed' && book.rating > 0 && (
               <span className="book-rating" aria-label={`Оцінка: ${book.rating} з 5`}>
-                {Array.from({ length: book.rating || 5 }, (_, index) => (
+                {Array.from({ length: book.rating }, (_, index) => (
                   <span className="rating-star" key={index} aria-hidden="true" />
                 ))}
               </span>

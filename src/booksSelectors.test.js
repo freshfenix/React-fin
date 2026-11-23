@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   selectBookCounts,
+  selectBooksReadThisYear,
   selectFilteredBooks,
   selectPagesRead,
   selectReadingBookCount,
@@ -50,6 +51,41 @@ describe('book selectors', () => {
     })
     expect(selectReadingBookCount(state)).toBe(1)
     expect(selectPagesRead(state)).toBe(150)
+  })
+
+  it('counts dated completions by year and retains pages from earlier reads', () => {
+    const historyState = {
+      books: {
+        items: [
+          {
+            ...state.books.items[0],
+            currentPage: 10,
+            completionHistory: [
+              { completedAt: '2026-03-15T12:00:00.000Z', pages: 96 },
+            ],
+          },
+          {
+            ...state.books.items[1],
+            status: 'reading',
+            currentPage: 12,
+            completionHistory: [{ completedAt: null, pages: 120 }],
+          },
+          {
+            ...state.books.items[2],
+            status: 'completed',
+            currentPage: 50,
+            completionHistory: [
+              { completedAt: '2025-11-03T12:00:00.000Z', pages: 50 },
+            ],
+          },
+        ],
+      },
+    }
+
+    expect(selectBooksReadThisYear(historyState, 2026)).toBe(1)
+    expect(selectBooksReadThisYear(historyState, 2025)).toBe(1)
+    expect(selectBooksReadThisYear(state, 2026)).toBe(0)
+    expect(selectPagesRead(historyState)).toBe(288)
   })
 
   it('filters by status and a localized search term', () => {

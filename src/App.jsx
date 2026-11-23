@@ -6,6 +6,7 @@ import { bookFilters } from './bookConstants'
 import {
   selectBookCounts,
   selectBooks,
+  selectBooksReadThisYear,
   selectFilteredBooks,
   selectPagesRead,
   selectReadingBookCount,
@@ -15,6 +16,9 @@ import './App.css'
 function App() {
   const books = useSelector(selectBooks)
   const counts = useSelector(selectBookCounts)
+  const booksReadThisYear = useSelector((state) =>
+    selectBooksReadThisYear(state, new Date().getFullYear()),
+  )
   const readingBookCount = useSelector(selectReadingBookCount)
   const pagesRead = useSelector(selectPagesRead)
   const [activeFilter, setActiveFilter] = useState('all')
@@ -172,14 +176,14 @@ function App() {
                 <span className="stat-trend">ТВОЯ ЦІЛЬ</span>
               </div>
               <strong>
-                {counts.completed}
+                {booksReadThisYear}
                 <span className="stat-unit"> / 24</span>
               </strong>
               <span className="stat-caption">книжок прочитано цього року</span>
               <div className="goal-track">
                 <span
                   style={{
-                    width: `${Math.min((counts.completed / 24) * 100, 100)}%`,
+                    width: `${Math.min((booksReadThisYear / 24) * 100, 100)}%`,
                   }}
                 />
               </div>
@@ -189,7 +193,7 @@ function App() {
                 <span className="stat-icon stat-icon-peach">▤</span>
                 <span className="stat-trend">У ТВОЇЙ БІБЛІОТЕЦІ</span>
               </div>
-              <strong>{books.length}</strong>
+              <strong>{counts['want-to-read']}</strong>
               <span className="stat-caption">книжок чекають на свою чергу</span>
             </article>
             <article className="stat-card">

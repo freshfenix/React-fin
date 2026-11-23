@@ -62,14 +62,37 @@ const starterBooks = [
   },
 ]
 
+function normalizeBook(book) {
+  return {
+    ...book,
+    completionHistory:
+      book.completionHistory ??
+      (book.status === 'completed'
+        ? [{ completedAt: null, pages: book.currentPage }]
+        : []),
+  }
+}
+
+function getStarterBooks() {
+  return starterBooks.map(normalizeBook)
+}
+
 function loadBooks() {
-  if (typeof localStorage === 'undefined') return starterBooks
+  if (typeof localStorage === 'undefined') return getStarterBooks()
 
   try {
     const savedBooks = localStorage.getItem(STORAGE_KEY)
-    if (!savedBooks) return starterBooks
+    if (!savedBooks) return getStarterBooks()
 
     const parsedBooks = JSON.parse(savedBooks)
+    const isValidCompletion = (completion) =>
+      completion &&
+      typeof completion === 'object' &&
+      Number.isFinite(completion.pages) &&
+      completion.pages >= 0 &&
+      (completion.completedAt === null ||
+        (typeof completion.completedAt === 'string' &&
+          Number.isFinite(Date.parse(completion.completedAt))))
     const isValidBook = (book) =>
       book &&
       typeof book === 'object' &&
@@ -84,18 +107,32 @@ function loadBooks() {
       book.totalPages >= 0 &&
       Number.isInteger(book.rating) &&
       book.rating >= 0 &&
-      book.rating <= 5
+      book.rating <= 5 &&
+      (book.completionHistory === undefined ||
+        (Array.isArray(book.completionHistory) &&
+          book.completionHistory.every(isValidCompletion)))
 
     if (!Array.isArray(parsedBooks) || !parsedBooks.every(isValidBook)) {
       console.error('Збережена бібліотека має некоректний формат.')
-      return starterBooks
+      return getStarterBooks()
     }
 
-    return parsedBooks
+    return parsedBooks.map(normalizeBook)
   } catch (error) {
     console.error('Не вдалося завантажити бібліотеку з localStorage:', error)
-    return starterBooks
+    return getStarterBooks()
   }
+}
+
+function completeBook(book) {
+  const pages = book.totalPages > 0 ? book.totalPages : book.currentPage
+  book.status = 'completed'
+  book.currentPage = pages
+  book.completionHistory ??= []
+  book.completionHistory.push({
+    completedAt: new Date().toISOString(),
+    pages,
+  })
 }
 
 export const searchBooks = createAsyncThunk(
@@ -126,19 +163,28 @@ const booksSlice = createSlice({
     searchResults: [],
     searchStatus: 'idle',
     searchError: null,
+    searchRequestId: null,
   },
   reducers: {
     addBook(state, action) {
       const alreadyExists = state.items.some((book) => book.id === action.payload.id)
-      if (!alreadyExists) state.items.unshift(action.payload)
+      if (!alreadyExists) state.items.unshift(normalizeBook(action.payload))
     },
     updateBookStatus(state, action) {
       const book = state.items.find((item) => item.id === action.payload.id)
       if (!book) return
 
+      const wasCompleted = book.status === 'completed'
+      if (action.payload.status === 'completed' && !wasCompleted) {
+        completeBook(book)
+        return
+      }
+
       book.status = action.payload.status
-      if (book.status === 'completed') book.currentPage = book.totalPages
-      if (book.status === 'reading' && book.currentPage === book.totalPages) {
+      if (
+        book.status === 'reading' &&
+        (wasCompleted || book.currentPage === book.totalPages)
+      ) {
         book.currentPage = 0
       }
     },
@@ -148,26 +194,38 @@ const booksSlice = createSlice({
 
       book.currentPage += 10
       if (book.totalPages && book.currentPage >= book.totalPages) {
-        book.currentPage = book.totalPages
-        book.status = 'completed'
+        completeBook(book)
       }
     },
     removeBook(state, action) {
       state.items = state.items.filter((book) => book.id !== action.payload)
     },
+    clearBookSearch(state) {
+      state.searchResults = []
+      state.searchStatus = 'idle'
+      state.searchError = null
+      state.searchRequestId = null
+    },
   },
   extraReducers(builder) {
     builder
-      .addCase(searchBooks.pending, (state) => {
+      .addCase(searchBooks.pending, (state, action) => {
         state.searchStatus = 'loading'
         state.searchError = null
         state.searchResults = []
+        state.searchRequestId = action.meta.requestId
       })
       .addCase(searchBooks.fulfilled, (state, action) => {
+        if (action.meta.requestId !== state.searchRequestId) return
+
         state.searchStatus = 'succeeded'
         state.searchResults = action.payload
+        state.searchRequestId = null
       })
       .addCase(searchBooks.rejected, (state, action) => {
+        if (action.meta.requestId !== state.searchRequestId) return
+
+        state.searchRequestId = null
         if (action.meta.aborted) {
           state.searchStatus = 'idle'
           state.searchError = null
@@ -180,6 +238,11 @@ const booksSlice = createSlice({
   },
 })
 
-export const { addBook, updateBookStatus, addReadingProgress, removeBook } =
-  booksSlice.actions
+export const {
+  addBook,
+  updateBookStatus,
+  addReadingProgress,
+  removeBook,
+  clearBookSearch,
+} = booksSlice.actions
 export default booksSlice.reducer

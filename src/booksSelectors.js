@@ -18,12 +18,33 @@ export const selectReadingBookCount = createSelector(
   (books) => books.filter((book) => book.status === 'reading').length,
 )
 
+export const selectBooksReadThisYear = createSelector(
+  [selectBooks, (_state, year) => year],
+  (books, year) =>
+    books.reduce(
+      (total, book) =>
+        total +
+        (book.completionHistory ?? []).filter(({ completedAt }) => {
+          if (!completedAt) return false
+          const date = new Date(completedAt)
+          return Number.isFinite(date.getTime()) && date.getFullYear() === year
+        }).length,
+      0,
+    ),
+)
+
 export const selectPagesRead = createSelector([selectBooks], (books) =>
   books.reduce((total, book) => {
-    if (book.status === 'completed' || book.status === 'reading') {
-      return total + book.currentPage
-    }
-    return total
+    const completionHistory =
+      book.completionHistory ??
+      (book.status === 'completed'
+        ? [{ pages: book.currentPage }]
+        : [])
+    const completedPages = completionHistory.reduce(
+      (pages, completion) => pages + completion.pages,
+      0,
+    )
+    return total + completedPages + (book.status === 'reading' ? book.currentPage : 0)
   }, 0),
 )
 

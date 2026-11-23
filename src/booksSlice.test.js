@@ -79,6 +79,31 @@ describe('books reducer', () => {
       status: 'reading',
       currentPage: 0,
     })
+    const book = state.items.find((item) => item.id === 'test-book')
+    expect(book.completionHistory).toHaveLength(1)
+    expect(book.completionHistory[0].pages).toBe(100)
+    expect(Number.isNaN(Date.parse(book.completionHistory[0].completedAt))).toBe(false)
+  })
+
+  it('migrates completed books without history before they are restarted', async () => {
+    storage.set(
+      'readery-books',
+      JSON.stringify([createBook({ status: 'completed', currentPage: 100 })]),
+    )
+    vi.resetModules()
+
+    const { default: reducer, updateBookStatus } = await import('./booksSlice')
+    let state = reducer(undefined, { type: 'init' })
+    state = reducer(
+      state,
+      updateBookStatus({ id: 'test-book', status: 'reading' }),
+    )
+
+    expect(state.items[0]).toMatchObject({
+      status: 'reading',
+      currentPage: 0,
+      completionHistory: [{ completedAt: null, pages: 100 }],
+    })
   })
 
   it('tracks progress when the total page count is unknown', () => {
@@ -129,6 +154,31 @@ describe('books reducer', () => {
       actions.STORAGE_KEY,
       expect.stringContaining('"test-book"'),
     )
+  })
+
+  it('clears search state and ignores results from requests that are no longer active', () => {
+    let state = booksReducer(undefined, { type: 'init' })
+    state = booksReducer(state, actions.searchBooks.pending('old-request', 'old'))
+    state = booksReducer(state, actions.clearBookSearch())
+    state = booksReducer(state, actions.searchBooks.pending('new-request', 'new'))
+    state = booksReducer(
+      state,
+      actions.searchBooks.fulfilled([{ id: 'old-result' }], 'old-request', 'old'),
+    )
+
+    expect(state).toMatchObject({
+      searchStatus: 'loading',
+      searchResults: [],
+      searchRequestId: 'new-request',
+    })
+
+    state = booksReducer(state, actions.clearBookSearch())
+    expect(state).toMatchObject({
+      searchStatus: 'idle',
+      searchResults: [],
+      searchError: null,
+      searchRequestId: null,
+    })
   })
 })
 

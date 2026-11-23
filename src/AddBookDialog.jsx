@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addBook, searchBooks } from './booksSlice'
+import { addBook, clearBookSearch, searchBooks } from './booksSlice'
 import BookCover from './BookCover'
 
 export default function AddBookDialog({ onClose, books }) {
   const dispatch = useDispatch()
+  const activeSearchRequest = useRef(null)
   const { searchResults, searchStatus, searchError } = useSelector(
     (state) => state.books,
   )
@@ -13,6 +14,14 @@ export default function AddBookDialog({ onClose, books }) {
   const [manualAuthor, setManualAuthor] = useState('')
   const [manualGenre, setManualGenre] = useState('')
   const existingIds = new Set(books.map((book) => book.id))
+
+  useEffect(
+    () => () => {
+      activeSearchRequest.current?.abort()
+      dispatch(clearBookSearch())
+    },
+    [dispatch],
+  )
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -25,7 +34,15 @@ export default function AddBookDialog({ onClose, books }) {
 
   function handleSearch(event) {
     event.preventDefault()
-    if (query.trim()) dispatch(searchBooks(query.trim()))
+    if (!query.trim()) return
+
+    const request = dispatch(searchBooks(query.trim()))
+    activeSearchRequest.current = request
+    request.then(() => {
+      if (activeSearchRequest.current === request) {
+        activeSearchRequest.current = null
+      }
+    })
   }
 
   function handleAdd(book) {
